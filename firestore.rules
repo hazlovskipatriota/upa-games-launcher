@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /games/{gameId} {
+      allow read: if true;
+      allow write: if false;
+
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if true;
+        allow update, delete: if false;
+      }
+    }
+
+    match /allowedDiscordUsers/{discordUserId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /launcher/{documentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

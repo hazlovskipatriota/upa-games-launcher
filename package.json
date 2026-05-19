@@ -1,0 +1,77 @@
+{
+  "name": "upa-games-launcher",
+  "version": "1.1.0",
+  "description": "UPA Games Launcher",
+  "main": "src/main.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "clean:local": "node scripts/clean-local.mjs",
+    "dist": "electron-builder --win nsis",
+    "dist:portable": "electron-builder --win portable",
+    "version:show": "node -e \"console.log(require('./package.json').version)\"",
+    "dist:win": "electron-builder --win nsis",
+    "dist:linux": "electron-builder --linux AppImage",
+    "dist:mac": "electron-builder --mac dmg"
+  },
+  "dependencies": {
+    "firebase": "^11.0.0",
+    "extract-zip": "^2.0.1",
+    "discord-rpc": "^4.0.1",
+    "electron-store": "^10.0.0"
+  },
+  "author": "UPA Games",
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.upagames.launcher",
+    "productName": "UPA Games Launcher",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "config/**/*",
+      "package.json",
+      "build/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "UPA Games Launcher"
+    },
+    "icon": "build/icon.png",
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png",
+      "category": "Game"
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.games"
+    }
+  }
+}

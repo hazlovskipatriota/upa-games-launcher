@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPA Games Launcher</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="scanline"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-card">
+        <div class="logo-ring">
+          <img src="./assets/upa-logo.png" alt="UPA Games Launcher" class="brand-logo" />
+        </div>
+        <h1>UPA Games Launcher</h1>
+        <p>Gry, aktualizacje i biblioteka w jednym miejscu.</p>
+      </div>
+
+      <div class="discord-panel hidden" id="discordPanel">
+        <div class="panel-heading">
+          <span>Discord</span>
+          <button id="discordServerBtn" class="discord-icon-btn" title="Dołącz do Discorda">Discord</button>
+        </div>
+
+        <label class="switch-row">
+          <span>Aktywność w Discordzie</span>
+          <input id="discordPresenceToggle" type="checkbox" />
+        </label>
+
+        <div id="discordStatus" class="discord-status">Nie skonfigurowano</div>
+
+        <div class="discord-login-actions">
+          <button id="discordLoginBtn" class="secondary">Zaloguj Discord</button>
+          <button id="discordLogoutBtn" class="secondary">Wyloguj</button>
+        </div>
+      </div>
+
+      <div class="launcher-panel">
+        <div class="panel-heading">
+          <span>Launcher</span>
+          <strong id="launcherVersion">v...</strong>
+        </div>
+
+        <div id="launcherUpdateBox" class="update-box">
+          <div class="update-title">Sprawdzanie aktualizacji</div>
+          <div class="update-text">Łączenie z serwerem.</div>
+        </div>
+
+        <div class="progress launcher-progress hidden">
+          <div class="progress-track">
+            <div id="launcherUpdateBar" class="progress-bar"></div>
+          </div>
+          <span id="launcherUpdateLabel" class="progress-label"></span>
+        </div>
+
+        <button id="checkLauncherUpdateBtn" class="secondary full">Sprawdź aktualizacje</button>
+        <button id="downloadLauncherUpdateBtn" class="gold full hidden">Pobierz aktualizację</button>
+      </div>
+
+      <div class="panel compact">
+        <div class="info-label">Folder gier</div>
+        <div id="gamesPath" class="info-value">Ładowanie...</div>
+      </div>
+
+      <div class="side-actions">
+        <button id="refreshBtn">Odśwież</button>
+        <button id="openFolderBtn" class="secondary">Otwórz folder</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="hero-kicker">Biblioteka</div>
+          <h2>Twoje gry</h2>
+          <p>Instaluj, uruchamiaj i aktualizuj gry z katalogu.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span id="statTotal">0</span>
+            <small>gry</small>
+          </div>
+          <div class="stat">
+            <span id="statInstalled">0</span>
+            <small>zainstalowane</small>
+          </div>
+          <div class="stat">
+            <span id="statUpdates">0</span>
+            <small>aktualizacje</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar">
+        <div>
+          <h3>Katalog</h3>
+          <p>Dostępne gry i aktualizacje.</p>
+        </div>
+        <div class="toolbar-badge">ONLINE</div>
+      </section>
+
+      <section id="statusBox" class="status hidden"></section>
+      <section id="gamesGrid" class="grid"></section>
+    </main>
+  </div>
+
+  <template id="gameCardTemplate">
+    <article class="card">
+      <div class="image-wrap">
+        <img class="game-image" alt="" />
+        <div class="image-overlay"></div>
+        <img class="game-logo" alt="" />
+        <span class="corner-badge">UPA</span>
+      </div>
+
+      <div class="card-body">
+        <div class="card-title-row">
+          <div>
+            <h3 class="game-name"></h3>
+            <span class="version"></span>
+          </div>
+          <span class="badge"></span>
+        </div>
+
+        <p class="game-description"></p>
+
+        <div class="details-hint">Kliknij kartę, aby zobaczyć szczegóły</div>
+
+        <div class="meta-row">
+          <span class="size"></span>
+          <span class="server-tag">SERWER</span>
+        </div>
+
+        <div class="progress hidden">
+          <div class="progress-track">
+            <div class="progress-bar"></div>
+          </div>
+          <span class="progress-label"></span>
+        </div>
+
+        <div class="actions">
+          <button class="install-btn">Zainstaluj</button>
+          <button class="play-btn gold">Graj</button>
+          <button class="update-btn">Aktualizuj</button>
+          <button class="shortcut-btn secondary">Utwórz skrót</button>
+          <button class="delete-btn danger">Usuń</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <section id="gameDetailsModal" class="game-details hidden" aria-hidden="true">
+    <div class="details-backdrop"></div>
+
+    <article class="details-panel">
+      <button id="detailsCloseBtn" class="details-close" aria-label="Zamknij">×</button>
+
+      <div class="details-cover-wrap">
+        <img id="detailsImage" class="details-cover" alt="" />
+      </div>
+
+      <div class="details-logo-row">
+        <img id="detailsLogo" class="details-logo" alt="" />
+      </div>
+
+      <div class="details-content">
+        <div class="details-top">
+          <div>
+            <div id="detailsBadge" class="details-badge">GRA</div>
+            <h2 id="detailsName"></h2>
+            <div id="detailsVersion" class="details-version"></div>
+          </div>
+
+          <div class="details-actions">
+            <button id="detailsInstallBtn">Zainstaluj</button>
+            <button id="detailsPlayBtn" class="gold">Graj</button>
+            <button id="detailsUpdateBtn">Aktualizuj</button>
+            <button id="detailsShortcutBtn" class="secondary">Utwórz skrót</button>
+            <button id="detailsDeleteBtn" class="danger">Usuń</button>
+          </div>
+        </div>
+
+        <div class="details-progress progress hidden">
+          <div class="progress-track">
+            <div class="progress-bar"></div>
+          </div>
+          <span class="progress-label"></span>
+        </div>
+
+        <div class="details-section">
+          <h3>Opis</h3>
+          <div id="detailsDescription" class="formatted-description"></div>
+        </div>
+
+        <div id="detailsChangelogSection" class="details-section hidden">
+          <h3>Zmiany</h3>
+          <div id="detailsChangelog" class="formatted-description"></div>
+        </div>
+
+        <div id="detailsReviewsSection" class="details-section hidden">
+          <div class="reviews-heading">
+            <h3>Opinie</h3>
+            <span id="reviewsSummary">Brak opinii</span>
+          </div>
+
+          <form id="reviewForm" class="review-form">
+            <label>
+              Ocena
+              <select id="reviewRating">
+                <option value="5">★★★★★ 5</option>
+                <option value="4">★★★★☆ 4</option>
+                <option value="3">★★★☆☆ 3</option>
+                <option value="2">★★☆☆☆ 2</option>
+                <option value="1">★☆☆☆☆ 1</option>
+                <option value="0">☆☆☆☆☆ 0</option>
+              </select>
+            </label>
+
+            <label>
+              Komentarz
+              <textarea id="reviewComment" rows="3" placeholder="Napisz krótką opinię"></textarea>
+            </label>
+
+            <button type="submit">Dodaj opinię</button>
+          </form>
+
+          <div id="reviewsList" class="reviews-list"></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "clientId": "TU_WKLEJ_DISCORD_APPLICATION_CLIENT_ID",
+  "serverInvite": "https://discord.gg/5fgAE5ShJA",
+  "redirectUri": "http://127.0.0.1/callback"
+}
