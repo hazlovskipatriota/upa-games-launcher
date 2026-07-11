@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "clientId": "TU_WKLEJ_DISCORD_APPLICATION_CLIENT_ID",
+  "clientId": "1506150599333249074",
   "serverInvite": "https://discord.gg/5fgAE5ShJA",
   "redirectUri": "http://127.0.0.1/callback"
 }
